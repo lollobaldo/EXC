@@ -230,7 +230,7 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
     assert(res == expectedResult)
   }
 
-  test("Task 4") {
+  test("Task4") {
     assert(initializeImdb(), INIT_ERR_MSG)
     import ImdbAnalysis._
     import ImdbData._
@@ -261,8 +261,15 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
     stop - start
   }
 
-  def padTo4(content: String): String = {
-    content + " " * (4 - content.length)
+  def padTo4Left(content: String): String = {
+    " " * (4 - content.length) ++ content
+  }
+
+  def formatValue(value: Long): String = {
+    val str = value.toString
+    val col = if (value <= 75) scala.io.AnsiColor.GREEN else if (value >= 150) scala.io.AnsiColor.RED
+    else scala.io.AnsiColor.WHITE
+    " " * (4 - str.length) ++ col ++ str ++ scala.io.AnsiColor.RESET
   }
 
   def makeRow(content: List[String]): String = {
@@ -276,7 +283,7 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
     val midRow = "├────────┼──────┼──────┼──────┤\n"
     val botRow = "└────────┴──────┴──────┴──────┘\n"
     val table = content.foldLeft(topRow){ (acc, obj) =>
-      acc ++ makeRow(obj.map(padTo4)) ++ "\n" ++ midRow
+      acc ++ makeRow(obj.map(padTo4Left)) ++ "\n" ++ midRow
     }
     table.dropRight(midRow.length) ++ botRow
   }
@@ -296,11 +303,15 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
       results = (t1 :: results._1, t2 :: results._2, t3 :: results._3, t4 :: results._4)
       i += 1
     }
-    println(results)
-    val labels = List("Task", "Avg", "Min", "Max")
+    //println(results)
+    val labels = List("Task  ", "Avg", "Min", "Max")
     val values = List(results._1, results._2, results._3, results._4)
     val tab = values.zipWithIndex.map{ case (values, index) =>
-      List("Task " ++ (index+1).toString, (values.sum / values.length).toString, values.min.toString, values.max.toString) }
+      List[String](
+        "Task " ++ (index+1).toString,
+        formatValue(values.sum / values.length),
+        formatValue(values.min),
+        formatValue(values.max)) }
     println(makeTable(labels :: tab))
     assert(true)
   }
