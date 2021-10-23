@@ -101,8 +101,8 @@ object ImdbAnalysis {
       acc.update(obj.tconst, obj.averageRating)
       acc
     }
-    val movies = l1
-      .filter(x => x.startYear.isDefined && x.genres.isDefined && x.startYear.get <= 1999
+    l1
+      .filter(x => x.startYear.isDefined && x.genres.isDefined && x.startYear.get >= 1900 && x.startYear.get <= 1999
         && x.primaryTitle.isDefined && x.titleType.isDefined && x.titleType.get == "movie" && ratingMap.contains(x.tconst))
       .flatMap(x => x.genres.get.map((g => (ratingMap(x.tconst), x.startYear.get, g, x.primaryTitle.get))))
       .groupBy(x => ((x._2/ 10) % 10, x._3))
@@ -110,7 +110,6 @@ object ImdbAnalysis {
       .map{ case (key, value) => (key._1, key._2, value.minBy(y => (-y._1, y._4))._4) }
       .toList
       .sorted
-    movies
   }
 
   //  In this task we are interested in all the crew names (primaryName) for whom there are at least two knownfor
@@ -123,8 +122,8 @@ object ImdbAnalysis {
       .toSet
     l3
       .filter(x => x.primaryName.isDefined && x.knownForTitles.isDefined
-        && x.knownForTitles.get.filter(y => newMovies.contains(y)).length >= 2)
-      .map(x => (x.primaryName.get, x.knownForTitles.get.filter(y => newMovies.contains(y)).length))
+        && x.knownForTitles.get.count(y => newMovies.contains(y)) >= 2)
+      .map(x => (x.primaryName.get, x.knownForTitles.get.count(y => newMovies.contains(y))))
   }
 
   def main(args: Array[String]) {

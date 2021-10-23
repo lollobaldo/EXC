@@ -149,9 +149,7 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
 
   test("Task1") {
     assert(initializeImdb(), INIT_ERR_MSG)
-    import ImdbAnalysis._
-    import ImdbData._
-    val list = titleBasicsList
+    val list = ImdbAnalysis.titleBasicsList
     val expectedResult =
       List((103.335144,1,3122,"History"), (66.02816,0,3900,"Comedy"), (87.51441,1,2925,"Action"), (58.799427,1,1440,"News"), (92.91029,1,1620,"War"), (78.26385,1,1080,"Horror"),
         (22.011599,0,1248,"Animation"), (94.11684,1,840,"Biography"), (63.46959,1,384,"Western"), (93.90296,1,2002,"Adult"), (84.3144,1,1442,"Crime"), (72.05768,1,877,"Sci-Fi"),
@@ -159,16 +157,14 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
         (85.49311,0,3900,"Drama"), (89.14799,1,1800,"Romance"), (52.160397,0,3900,"Family"), (91.55019,1,780,"Thriller"), (51.512554,0,8400,"Documentary"), (73.03895,1,999,"Fantasy"),
         (59.774086,7,1020,"Talk-Show"), (83.08545,1,877,"Mystery"), (44.027664,1,300,"Game-Show"), (76.81902,1,1140,"Sport"))
     val floatedExpected = expectedResult.map(x => (x._1.toFloat, x._2, x._3, x._4))
-    assertSameElementsTask1(task1(list), floatedExpected)
+    assertSameElementsTask1(ImdbAnalysis.task1(list), floatedExpected)
   }
 
   test("Task2") {
     assert(initializeImdb(), INIT_ERR_MSG)
-    import ImdbAnalysis._
-    import ImdbData._
-    val list1 = titleBasicsList
-    val list2 = titleRatingsList
-    val res = task2(list1, list2)
+    val list1 = ImdbAnalysis.titleBasicsList
+    val list2 = ImdbAnalysis.titleRatingsList
+    val res = ImdbAnalysis.task2(list1, list2)
     assertSameElements(res,
       List("Goodfellas", "Home Alone", "The Silence of the Lambs", "Terminator 2: Judgment Day", "Reservoir Dogs", "Groundhog Day", "Jurassic Park", "Schindler's List", "Forrest Gump",
         "The Lion King", "Léon: The Professional", "Pulp Fiction", "The Shawshank Redemption", "Braveheart", "Heat", "Se7en", "Toy Story", "12 Monkeys", "The Usual Suspects", "Fargo",
@@ -186,58 +182,62 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
 
   test("Task3") {
     assert(initializeImdb(), INIT_ERR_MSG)
-    import ImdbAnalysis._
-    import ImdbData._
-    val list1 = titleBasicsList
-    val list2 = titleRatingsList
-    val res = task3(list1, list2)
+    val list1 = ImdbAnalysis.titleBasicsList
+    val list2 = ImdbAnalysis.titleRatingsList
+    val res = ImdbAnalysis.task3(list1, list2)
     val expectedResult = List(
-      (0,"Action","The Story of the Kelly Gang"), (0,"Adventure","The Story of the Kelly Gang"), (0,"Biography","The Story of the Kelly Gang"), (0,"Comedy","Um Cavalheiro Deveras Obsequioso"), (0,"Documentary","België"),
-      (0,"Drama","Heroes of the Cross"), (0,"Family","The Life of Moses"), (0,"Fantasy","The Fairylogue and Radio-Plays"), (0,"History","The Scottish Covenanters"), (0,"Music","Faust"), (0,"Musical","Highlights from The Mikado"),
-      (0,"News","May Day Parade"), (0,"Romance","A Viúva Alegre"), (0,"Sport","Jeffries and Ruhlin Sparring Contest at San Francisco, Cal., November 15, 1901"), (0,"War","Gøngehøvdingen"), (1,"Action","The Scarlet Runner"),
-      (1,"Adult","The Goat"), (1,"Adventure","The Dark Star"), (1,"Animation","El apóstol"), (1,"Biography","The Fall of the Romanoffs"), (1,"Comedy","Seventeen"), (1,"Crime","It Happened in Paris"),
-      (1,"Documentary","Ayastefanos'taki Rus Abidesinin Yikilisi"), (1,"Drama","Arms and the Woman"), (1,"Family","The Blue Bird"), (1,"Fantasy","Peer Gynt"), (1,"History","War and Peace"), (1,"Horror","J'accuse!"),
-      (1,"Musical","Excelsior"), (1,"Mystery","The Devil-Stone"), (1,"Romance","On the Quiet"), (1,"Sci-Fi","A Trip to Mars"), (1,"Sport","1915 World's Championship Series"), (1,"Thriller","The Mutiny of the Bounty"),
-      (1,"War","On Dangerous Ground"), (1,"Western","Revenge"), (2,"Action","Frozen River"), (2,"Adult","Le ménage moderne de Madame Butterfly"), (2,"Adventure","Ginsberg the Great"), (2,"Animation","The Adventures of Prince Achmed"),
-      (2,"Biography","Napoleon"), (2,"Comedy","Sonny Boy"), (2,"Crime","Queen of the Night Clubs"), (2,"Documentary","Hunger... Hunger... Hunger"), (2,"Drama","Queen of the Night Clubs"), (2,"Family","The Kid"), (2,"Fantasy","Die Nibelungen: Siegfried"),
-      (2,"Film-Noir","Underworld"), (2,"History","Napoleon"), (2,"Horror","Faust"), (2,"Music","Man with a Movie Camera"), (2,"Musical","Queen of the Night Clubs"), (2,"Mystery","The Cabinet of Dr. Caligari"), (2,"News","Felix Hits the North Pole"),
-      (2,"Romance","Hold Your Man"), (2,"Sci-Fi","Metropolis"), (2,"Short","In the Good Old Summer Time"), (2,"Sport","Johnny Get Your Hair Cut"), (2,"Thriller","Greed"), (2,"War","The Big Parade"), (2,"Western","A One Man Game"), (3,"Action","Law of the Texan"),
-      (3,"Adventure","Chucho el Roto"), (3,"Animation","The Story of the Fox"), (3,"Biography","Thiruneelakantar"), (3,"Comedy","L'Ordonnance malgré lui"), (3,"Crime","Der vierte kommt nicht"),
-      (3,"Documentary","Festas de Homenagem do Futebol Clube do Porto à Rainha da Colónia Portuguesa no Brasil"), (3,"Drama","Bhakta Jayadeva"), (3,"Family","Modern Times"), (3,"Fantasy","The Wizard of Oz"), (3,"Film-Noir","I Am a Fugitive from a Chain Gang"),
-      (3,"History","La chanson de l'adieu"), (3,"Horror","Freaks"), (3,"Music","Romance in the Dark"), (3,"Musical","Bhakta Jayadeva"), (3,"Mystery","M"), (3,"News","Baboona"), (3,"Romance","Fugitive Lady"), (3,"Sci-Fi","King Kong"),
-      (3,"Short","Hockey: Canada's National Game"), (3,"Sport","Fighting Thoroughbreds"), (3,"Thriller","M"), (3,"War","End of the Trail"), (3,"Western","Trailing North"), (4,"Action","Kamagong: Bayani ng Mahirap"), (4,"Adventure","The Treasure of the Sierra Madre"),
-      (4,"Animation","Fantasia"), (4,"Biography","Vladimir Ilich Lenin"), (4,"Comedy","Melodies of America"), (4,"Crime","Double Indemnity"), (4,"Documentary","One Inch from Victory"), (4,"Drama","Nandanar"), (4,"Family","It's a Wonderful Life"),
-      (4,"Fantasy","It's a Wonderful Life"), (4,"Film-Noir","Double Indemnity"), (4,"History","Nazi Concentration and Prison Camps"), (4,"Horror","Dead of Night"), (4,"Music","St. Matthew Passion"), (4,"Musical","Melodies of America"), (4,"Mystery","Mohan"),
-      (4,"Romance","Casablanca"), (4,"Sci-Fi","Krakatit"), (4,"Short","The Nazis Strike"), (4,"Sport","Heroes of the Saddle"), (4,"Thriller","Rome, Open City"), (4,"War","One Inch from Victory"), (4,"Western","Stallion Canyon"), (5,"Action","Nufarul rosu"),
-      (5,"Adventure","Seven Samurai"), (5,"Animation","Amazon Symphony"), (5,"Biography","Mahatma Phule"), (5,"Comedy","Mayabazar"), (5,"Crime","12 Angry Men"), (5,"Documentary","Pinne e arpioni"), (5,"Drama","Pavankhind"), (5,"Family","Bhaktha Vijaya"),
-      (5,"Fantasy","Umer Marvi"), (5,"Film-Noir","Sunset Blvd."), (5,"History","The Book of Acts Series"), (5,"Horror","Diabolique"), (5,"Music","Díszelöadás"), (5,"Musical","Buenos Aires a la vista"), (5,"Mystery","Rear Window"), (5,"Romance","Meine 99 Bräute"),
-      (5,"Sci-Fi","Sharey Chuattar"), (5,"Sport","Los peloteros"), (5,"Thriller","Rear Window"), (5,"War","Victory at Sea"), (5,"Western","The Old Frontier"), (6,"Action","Lastik Man"), (6,"Adult","A Man, Eight Girls"), (6,"Adventure","The Adventures of Goopy and Bagha"),
-      (6,"Animation","Havoc in Heaven"), (6,"Biography","Niko Pirosmanishvili"), (6,"Comedy","O Palhaço O Que É?"), (6,"Crime","Hei mei gui"), (6,"Documentary","Partizanska igra"), (6,"Drama","Mother Dearest"), (6,"Family","The Adventures of Goopy and Bagha"),
-      (6,"Fantasy","Lastik Man"), (6,"History","The Human Condition III: A Soldier's Prayer"), (6,"Horror","Psycho"), (6,"Music","Der Freischütz"), (6,"Musical","The Tony Fontane Story"), (6,"Mystery","Hara-Kiri"), (6,"News","Crisis: Behind a Presidential Commitment"),
-      (6,"Romance","World Gone Mad"), (6,"Sci-Fi","2001: A Space Odyssey"), (6,"Short","Why Vietnam?"), (6,"Sport","Rocco and His Brothers"), (6,"Thriller","Le Trou"), (6,"War","W.I.A. Wounded in Action"), (6,"Western","The Good, the Bad and the Ugly"), (7,"Action","O Judoka"),
-      (7,"Adult","Don't Fight It, Kid"), (7,"Adventure","O Judoka"), (7,"Animation","The Pinchcliffe Grand Prix"), (7,"Biography","Raja Harishchandrra"), (7,"Comedy","The Chaos Class"), (7,"Crime","The Godfather"), (7,"Documentary","Always a New Beginning"),
-      (7,"Drama","The Chaos Class"), (7,"Family","Isa-dalawa-tatlo: Ang tatay kong kalbo"), (7,"Fantasy","Daana Veera Soora Karna"), (7,"History","Raja Harishchandrra"), (7,"Horror","Alien"), (7,"Music","Pink Floyd: Live at Pompeii"), (7,"Musical","Nagara Haavu"),
-      (7,"Mystery","Süt Kardesler"), (7,"News","Cup Glory"), (7,"Reality-TV","As Armas e o Povo"), (7,"Romance","Bakit may pag-ibig pa?"), (7,"Sci-Fi","Alien"), (7,"Sport","The Speed Merchants"), (7,"Talk-Show","Revenge of the Motorcycle Mama"), (7,"Thriller","Chinatown"),
-      (7,"War","The Fifth Seal"), (7,"Western","The Marshal of Windy Hollow"), (8,"Action","Ang pumatay ng dahil sa iyo"), (8,"Adult","Dresden Diary 3"), (8,"Adventure","Who's Singin' Over There?"), (8,"Animation","Grave of the Fireflies"),
-      (8,"Biography","Who Shot President Kennedy?"), (8,"Comedy","Rock-N-America"), (8,"Crime","The Untouchable Family"), (8,"Documentary","Disappearing Oasis, Last Oasis"), (8,"Drama","Në çdo stinë"), (8,"Family","Fillim i vështirë"),
-      (8,"Fantasy","Star Wars: Episode V - The Empire Strikes Back"), (8,"History","Who Shot President Kennedy?"), (8,"Horror","The Shining"), (8,"Music","Juju Music"), (8,"Musical","Chithram"), (8,"Mystery","Xue jian hua ping"), (8,"Romance","Në çdo stinë"),
-      (8,"Sci-Fi","Abandonada"), (8,"Sport","Raging Bull"), (8,"Thriller","Opasen char"), (8,"War","Entertaining the Troops"), (8,"Western","Sadiyata"), (9,"Action","Por un salvaje amor"), (9,"Adult","Girls Loving Girls"), (9,"Adventure","Ramayana: The Legend of Prince Rama"),
-      (9,"Animation","Ramayana: The Legend of Prince Rama"), (9,"Biography","Diego Rivera: I Paint What I See"), (9,"Comedy","Mohammed's Radio"), (9,"Crime","Pulp Fiction"), (9,"Documentary","Aco, odluci se: Slavko Sohaj iznedu dvije ljubavi"), (9,"Drama","The Shawshank Redemption"),
-      (9,"Family","Mi Puerto Rico"), (9,"Fantasy","The Green Mile"), (9,"History","Schindler's List"), (9,"Horror","Manichithrathazhu"), (9,"Music","Mi Puerto Rico"), (9,"Musical","Edu Kondalaswamy"), (9,"Mystery","In Harihar Nagar"), (9,"News","Reproduction of the Corbett and Fitzsimmons Fight"),
-      (9,"Romance","Isang tanong, isang sagot"), (9,"Sci-Fi","The Matrix"), (9,"Short","A Worn Path"), (9,"Sport","Freestyle: The Victories of Dan Gable"), (9,"Thriller","Devasuram"), (9,"War","Aguner Poroshmoni"), (9,"Western","Unforgiven")
+      (0,"Action","The Story of the Kelly Gang"), (0,"Adventure","The Story of the Kelly Gang"), (0,"Biography","The Story of the Kelly Gang"),
+      (0,"Comedy","Um Cavalheiro Deveras Obsequioso"), (0,"Documentary","België"), (0,"Drama","Heroes of the Cross"), (0,"Family","The Life of Moses"),
+      (0,"Fantasy","The Fairylogue and Radio-Plays"), (0,"History","The Scottish Covenanters"), (0,"Music","Faust"), (0,"Musical","Highlights from The Mikado"),
+      (0,"News","May Day Parade"), (0,"Romance","A Viúva Alegre"), (0,"Sport","Jeffries and Ruhlin Sparring Contest at San Francisco, Cal., November 15, 1901"),
+      (0,"War","Gøngehøvdingen"), (1,"Action","The Scarlet Runner"), (1,"Adult","The Goat"), (1,"Adventure","The Dark Star"), (1,"Animation","El apóstol"),
+      (1,"Biography","The Fall of the Romanoffs"), (1,"Comedy","Seventeen"), (1,"Crime","It Happened in Paris"), (1,"Documentary","Ayastefanos'taki Rus Abidesinin Yikilisi"),
+      (1,"Drama","Arms and the Woman"), (1,"Family","The Blue Bird"), (1,"Fantasy","Peer Gynt"), (1,"History","War and Peace"), (1,"Horror","J'accuse!"),
+      (1,"Musical","Excelsior"), (1,"Mystery","The Devil-Stone"), (1,"Romance","On the Quiet"), (1,"Sci-Fi","A Trip to Mars"), (1,"Sport","1915 World's Championship Series"),
+      (1,"Thriller","The Mutiny of the Bounty"), (1,"War","On Dangerous Ground"), (1,"Western","Revenge"), (2,"Action","Frozen River"), (2,"Adult","Le ménage moderne de Madame Butterfly"),
+      (2,"Adventure","Ginsberg the Great"), (2,"Animation","The Adventures of Prince Achmed"), (2,"Biography","Napoleon"), (2,"Comedy","Sonny Boy"), (2,"Crime","Queen of the Night Clubs"),
+      (2,"Documentary","Hunger... Hunger... Hunger"), (2,"Drama","Queen of the Night Clubs"), (2,"Family","The Kid"), (2,"Fantasy","Die Nibelungen: Siegfried"), (2,"Film-Noir","Underworld"),
+      (2,"History","Napoleon"), (2,"Horror","Faust"), (2,"Music","Man with a Movie Camera"), (2,"Musical","Queen of the Night Clubs"), (2,"Mystery","The Cabinet of Dr. Caligari"),
+      (2,"News","Felix Hits the North Pole"), (2,"Romance","Hold Your Man"), (2,"Sci-Fi","Metropolis"), (2,"Short","In the Good Old Summer Time"), (2,"Sport","Johnny Get Your Hair Cut"),
+      (2,"Thriller","Greed"), (2,"War","The Big Parade"), (2,"Western","A One Man Game"), (3,"Action","Law of the Texan"), (3,"Adventure","Chucho el Roto"), (3,"Animation","The Story of the Fox"),
+      (3,"Biography","Thiruneelakantar"), (3,"Comedy","L'Ordonnance malgré lui"), (3,"Crime","Der vierte kommt nicht"), (3,"Documentary","Festas de Homenagem do Futebol Clube do Porto à Rainha da Colónia Portuguesa no Brasil"),
+      (3,"Drama","Bhakta Jayadeva"), (3,"Family","Modern Times"), (3,"Fantasy","The Wizard of Oz"), (3,"Film-Noir","I Am a Fugitive from a Chain Gang"), (3,"History","La chanson de l'adieu"), (3,"Horror","Freaks"),
+      (3,"Music","Romance in the Dark"), (3,"Musical","Bhakta Jayadeva"), (3,"Mystery","M"), (3,"News","Baboona"), (3,"Romance","Fugitive Lady"), (3,"Sci-Fi","King Kong"), (3,"Short","Hockey: Canada's National Game"),
+      (3,"Sport","Fighting Thoroughbreds"), (3,"Thriller","M"), (3,"War","End of the Trail"), (3,"Western","Trailing North"), (4,"Action","Kamagong: Bayani ng Mahirap"), (4,"Adventure","The Treasure of the Sierra Madre"),
+      (4,"Animation","Fantasia"), (4,"Biography","Vladimir Ilich Lenin"), (4,"Comedy","Melodies of America"), (4,"Crime","Double Indemnity"), (4,"Documentary","One Inch from Victory"), (4,"Drama","Nandanar"),
+      (4,"Family","It's a Wonderful Life"), (4,"Fantasy","It's a Wonderful Life"), (4,"Film-Noir","Double Indemnity"), (4,"History","Nazi Concentration and Prison Camps"), (4,"Horror","Dead of Night"),
+      (4,"Music","St. Matthew Passion"), (4,"Musical","Melodies of America"), (4,"Mystery","Mohan"), (4,"Romance","Casablanca"), (4,"Sci-Fi","Krakatit"), (4,"Short","The Nazis Strike"),
+      (4,"Sport","Heroes of the Saddle"), (4,"Thriller","Rome, Open City"), (4,"War","One Inch from Victory"), (4,"Western","Stallion Canyon"), (5,"Action","Nufarul rosu"), (5,"Adventure","Seven Samurai"),
+      (5,"Animation","Amazon Symphony"), (5,"Biography","Mahatma Phule"), (5,"Comedy","Mayabazar"), (5,"Crime","12 Angry Men"), (5,"Documentary","Pinne e arpioni"), (5,"Drama","Pavankhind"), (5,"Family","Bhaktha Vijaya"),
+      (5,"Fantasy","Umer Marvi"), (5,"Film-Noir","Sunset Blvd."), (5,"History","The Book of Acts Series"), (5,"Horror","Diabolique"), (5,"Music","Díszelöadás"), (5,"Musical","Buenos Aires a la vista"),
+      (5,"Mystery","Rear Window"), (5,"Romance","Meine 99 Bräute"), (5,"Sci-Fi","Sharey Chuattar"), (5,"Sport","Los peloteros"), (5,"Thriller","Rear Window"), (5,"War","Victory at Sea"), (5,"Western","The Old Frontier"),
+      (6,"Action","Lastik Man"), (6,"Adult","A Man, Eight Girls"), (6,"Adventure","The Adventures of Goopy and Bagha"), (6,"Animation","Havoc in Heaven"), (6,"Biography","Niko Pirosmanishvili"),
+      (6,"Comedy","O Palhaço O Que É?"), (6,"Crime","Hei mei gui"), (6,"Documentary","Partizanska igra"), (6,"Drama","Mother Dearest"), (6,"Family","The Adventures of Goopy and Bagha"), (6,"Fantasy","Lastik Man"),
+      (6,"History","The Human Condition III: A Soldier's Prayer"), (6,"Horror","Psycho"), (6,"Music","Der Freischütz"), (6,"Musical","The Tony Fontane Story"), (6,"Mystery","Hara-Kiri"),
+      (6,"News","Crisis: Behind a Presidential Commitment"), (6,"Romance","World Gone Mad"), (6,"Sci-Fi","2001: A Space Odyssey"), (6,"Short","Why Vietnam?"), (6,"Sport","Rocco and His Brothers"),
+      (6,"Thriller","Le Trou"), (6,"War","W.I.A. Wounded in Action"), (6,"Western","The Good, the Bad and the Ugly"), (7,"Action","O Judoka"), (7,"Adult","Don't Fight It, Kid"), (7,"Adventure","O Judoka"),
+      (7,"Animation","The Pinchcliffe Grand Prix"), (7,"Biography","Raja Harishchandrra"), (7,"Comedy","The Chaos Class"), (7,"Crime","The Godfather"), (7,"Documentary","Always a New Beginning"),
+      (7,"Drama","The Chaos Class"), (7,"Family","Isa-dalawa-tatlo: Ang tatay kong kalbo"), (7,"Fantasy","Daana Veera Soora Karna"), (7,"History","Raja Harishchandrra"), (7,"Horror","Alien"),
+      (7,"Music","Pink Floyd: Live at Pompeii"), (7,"Musical","Nagara Haavu"), (7,"Mystery","Süt Kardesler"), (7,"News","Cup Glory"), (7,"Reality-TV","As Armas e o Povo"), (7,"Romance","Bakit may pag-ibig pa?"),
+      (7,"Sci-Fi","Alien"), (7,"Sport","The Speed Merchants"), (7,"Talk-Show","Revenge of the Motorcycle Mama"), (7,"Thriller","Chinatown"), (7,"War","The Fifth Seal"), (7,"Western","The Marshal of Windy Hollow"),
+      (8,"Action","Ang pumatay ng dahil sa iyo"), (8,"Adult","Dresden Diary 3"), (8,"Adventure","Who's Singin' Over There?"), (8,"Animation","Grave of the Fireflies"), (8,"Biography","Who Shot President Kennedy?"),
+      (8,"Comedy","Rock-N-America"), (8,"Crime","The Untouchable Family"), (8,"Documentary","Disappearing Oasis, Last Oasis"), (8,"Drama","Në çdo stinë"), (8,"Family","Fillim i vështirë"),
+      (8,"Fantasy","Star Wars: Episode V - The Empire Strikes Back"), (8,"History","Who Shot President Kennedy?"), (8,"Horror","The Shining"), (8,"Music","Juju Music"), (8,"Musical","Chithram"),
+      (8,"Mystery","Xue jian hua ping"), (8,"Romance","Në çdo stinë"), (8,"Sci-Fi","Abandonada"), (8,"Sport","Raging Bull"), (8,"Thriller","Opasen char"), (8,"War","Entertaining the Troops"),
+      (8,"Western","Sadiyata"), (9,"Action","Por un salvaje amor"), (9,"Adult","Girls Loving Girls"), (9,"Adventure","Ramayana: The Legend of Prince Rama"), (9,"Animation","Ramayana: The Legend of Prince Rama"),
+      (9,"Biography","Diego Rivera: I Paint What I See"), (9,"Comedy","Mohammed's Radio"), (9,"Crime","Pulp Fiction"), (9,"Documentary","Aco, odluci se: Slavko Sohaj iznedu dvije ljubavi"), (9,"Drama","The Shawshank Redemption"),
+      (9,"Family","Mi Puerto Rico"), (9,"Fantasy","The Green Mile"), (9,"History","Schindler's List"), (9,"Horror","Manichithrathazhu"), (9,"Music","Mi Puerto Rico"), (9,"Musical","Edu Kondalaswamy"),
+      (9,"Mystery","In Harihar Nagar"), (9,"Romance","Isang tanong, isang sagot"), (9,"Sci-Fi","The Matrix"), (9,"Short","A Worn Path"), (9,"Sport","Freestyle: The Victories of Dan Gable"), (9,"Thriller","Devasuram"), (9,"War","Aguner Poroshmoni"), (9,"Western","Unforgiven")
     )
-
     assert(res == expectedResult)
   }
 
   test("Task4") {
     assert(initializeImdb(), INIT_ERR_MSG)
-    import ImdbAnalysis._
-    import ImdbData._
-    val list1 = titleBasicsList
-    val list2 = titleCrewList
-    val list3 = nameBasicsList
-    val res = task4(list1, list2, list3)
+    val list1 = ImdbAnalysis.titleBasicsList
+    val list2 = ImdbAnalysis.titleCrewList
+    val list3 = ImdbAnalysis.nameBasicsList
+    val res = ImdbAnalysis.task4(list1, list2, list3)
     val expectedResult = List(
       ("Karimah Westbrook",2), ("Moustapha Alassane",2), ("Alexa Alden",2), ("Ted Alvarez",2), ("Helen Barrett",2), ("Daryl Bartley",2), ("Rosie Bedford-Stradling",2),
       ("Jamie Bishop",2), ("Philip Borg",2), ("Jess Brackenburry",2), ("Kevin Brink",2), ("Chris Burdon",2), ("C. Douglas Cameron",2), ("Robert C. Campion",2), ("Richard L. Carden",2),
@@ -295,7 +295,7 @@ class ImdbSuite extends AnyFunSuite with BeforeAndAfterAll {
 
     var results: (List[Long], List[Long], List[Long], List[Long]) = (List(), List(), List(), List())
     var i = 0
-    while(i < 50) {
+    while(i < 100) {
       val t1 = timeIt("Task 1", task1(titleBasicsList))
       val t2 = timeIt("Task 2", task2(titleBasicsList, titleRatingsList))
       val t3 = timeIt("Task 3", task3(titleBasicsList, titleRatingsList))
