@@ -31,60 +31,60 @@ object ImdbAnalysis {
   //    should be kept in minutes and titles with 0 runtime duration are valid and should be accounted for in your
   //    solution.
   def task1(list: List[TitleBasics]): List[(Float, Int, Int, String)] = {
-    //    list
-    //      .filter(x => x.runtimeMinutes.isDefined && x.genres.isDefined)
-    //      .flatMap(x => x.genres.get.map((_, x.runtimeMinutes.get)))
-    //      .groupBy(_._1)
-    //      .map{case (genre, rs) => {
-    //        val (sum, tot, mi, ma) = rs.foldLeft((0, 0, Int.MaxValue, 0))((t: (Int, Int, Int, Int), r: (_, Int)) =>
-    //          (t._1 + r._2, t._2 + 1, r._2.min(t._3), r._2.max(t._4)))
-    //        ((sum / tot).toFloat, mi, ma, genre)
-    //      }}
-    //      .toList
+        list
+          .filter(x => x.runtimeMinutes.isDefined && x.genres.isDefined)
+          .flatMap(x => x.genres.get.map((_, x.runtimeMinutes.get)))
+          .groupBy(_._1)
+          .map{case (genre, rs) => {
+            val (sum, tot, mi, ma) = rs.foldLeft((0, 0, Int.MaxValue, 0))((t: (Int, Int, Int, Int), r: (_, Int)) =>
+              (t._1 + r._2, t._2 + 1, r._2.min(t._3), r._2.max(t._4)))
+            ((sum.toFloat / tot), mi, ma, genre)
+          }}
+          .toList
 
-    list.foldLeft(new mutable.AnyRefMap(100): mutable.AnyRefMap[String, (Int, Int, Int, Int)])({ (acc, obj) =>
-      (obj.genres, obj.runtimeMinutes) match {
-        case (Some(k), Some(r)) =>
-          k.foldLeft(acc)((a, ky) => {
-            val t = acc.getOrElse(ky, (0, 0, Int.MaxValue, 0))
-            acc.update(ky, (t._1 + r, t._2 + 1, r.min(t._3), r.max(t._4)))
-            acc
-          })
-        case _ => acc
-      }
-    })
-      .map{case (genre, (sum, tot, mi, ma)) => {
-        ((sum.toFloat / tot), mi, ma, genre)
-      }}
-      .toList
+//    list.foldLeft(new mutable.AnyRefMap(100): mutable.AnyRefMap[String, (Int, Int, Int, Int)])({ (acc, obj) =>
+//      (obj.genres, obj.runtimeMinutes) match {
+//        case (Some(k), Some(r)) =>
+//          k.foldLeft(acc)((a, ky) => {
+//            val t = acc.getOrElse(ky, (0, 0, Int.MaxValue, 0))
+//            acc.update(ky, (t._1 + r, t._2 + 1, r.min(t._3), r.max(t._4)))
+//            acc
+//          })
+//        case _ => acc
+//      }
+//    })
+//      .map{case (genre, (sum, tot, mi, ma)) => {
+//        ((sum.toFloat / tot), mi, ma, genre)
+//      }}
+//      .toList
   }
 
   //  Return the titles of the movies which were released between 1990 and 2018 (inclusive), have an average
   //  rating of 7.5 or more, and have received 500000 votes or more.
   //    For the titles use the primaryTitle field and account only for entries whose titleType is ‘movie’.
   def task2(l1: List[TitleBasics], l2: List[TitleRatings]): List[String] = {
-    //    val topRatings = l2
-    //      .filter(x => x.averageRating >= 7.5 && x.numVotes >= 500000)
-    //      .map(_.tconst)
-    //      .toSet
-    //    l1.filter(x =>
-    //      x.startYear.isDefined && x.primaryTitle.isDefined && x.titleType.isDefined
-    //        && x.startYear.get >= 1990 && x.startYear.get <= 2018 && x.titleType.get == "movie"
-    //        && topRatings.contains(x.tconst))
-    //      .map(_.primaryTitle.get)
-
-    val l = l2.length
-    val topRatings = l2.foldLeft(new mutable.AnyRefMap(l*2): mutable.AnyRefMap[String, Float]){ (acc, obj) =>
-      if (obj.averageRating >= 7.5 && obj.numVotes >= 500000) {
-        acc.update(obj.tconst, obj.averageRating)
-      }
-      acc
-    }
+    val topRatings = l2
+      .filter(x => x.averageRating >= 7.5 && x.numVotes >= 500000)
+      .map(_.tconst)
+      .toSet
     l1.filter(x =>
       x.startYear.isDefined && x.primaryTitle.isDefined && x.titleType.isDefined
         && x.startYear.get >= 1990 && x.startYear.get <= 2018 && x.titleType.get == "movie"
         && topRatings.contains(x.tconst))
       .map(_.primaryTitle.get)
+
+//    val l = l2.length
+//    val topRatings = l2.foldLeft(new mutable.AnyRefMap(l*2): mutable.AnyRefMap[String, Float]){ (acc, obj) =>
+//      if (obj.averageRating >= 7.5 && obj.numVotes >= 500000) {
+//        acc.update(obj.tconst, obj.averageRating)
+//      }
+//      acc
+//    }
+//    l1.filter(x =>
+//      x.startYear.isDefined && x.primaryTitle.isDefined && x.titleType.isDefined
+//        && x.startYear.get >= 1990 && x.startYear.get <= 2018 && x.titleType.get == "movie"
+//        && topRatings.contains(x.tconst))
+//      .map(_.primaryTitle.get)
   }
 
   //  Return the top rated movie of each genre for each decade between 1900 and 1999.
@@ -95,12 +95,13 @@ object ImdbAnalysis {
   //  the same decade, print only the one with the title that comes first alphabetically. Each decade should be
   //    represented with a single digit, starting with 0 corresponding to 1900-1909.
   def task3(l1: List[TitleBasics], l2: List[TitleRatings]): List[(Int, String, String)] = {
-    //    val ratingMap = l2.map(x => (x.tconst, x.averageRating)).toMap;
-    val l = l2.length
-    val ratingMap = l2.foldLeft(new mutable.AnyRefMap(l*2): mutable.AnyRefMap[String, Float]){ (acc, obj) =>
-      acc.update(obj.tconst, obj.averageRating)
-      acc
-    }
+//    val l = l2.length
+//    val ratingMap = l2.foldLeft(new mutable.AnyRefMap(l*2): mutable.AnyRefMap[String, Float]){ (acc, obj) =>
+//      acc.update(obj.tconst, obj.averageRating)
+//      acc
+//    }
+
+    val ratingMap = l2.map(x => (x.tconst, x.averageRating)).toMap;
     l1
       .filter(x => x.startYear.isDefined && x.genres.isDefined && x.startYear.get >= 1900 && x.startYear.get <= 1999
         && x.primaryTitle.isDefined && x.titleType.isDefined && x.titleType.get == "movie" && ratingMap.contains(x.tconst))
