@@ -1,3 +1,4 @@
-imdb/out/
-imdb/project/target/
-imdb/target/
+**/out/
+**/.idea/
+**/project/target/
+**/target/
