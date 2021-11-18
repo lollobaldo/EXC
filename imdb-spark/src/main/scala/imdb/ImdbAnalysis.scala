@@ -54,13 +54,14 @@ object ImdbAnalysis {
   def task2(l1: RDD[TitleBasics], l2: RDD[TitleRatings]): RDD[String] = {
     val topRatings = l2
       .filter(x => x.averageRating >= 7.5 && x.numVotes >= 500000)
-      .map(x => (x.tconst, ""))
-      .collectAsMap()
+      .map(x => (x.tconst, 0))
+
     l1.filter(x =>
       x.startYear.isDefined && x.primaryTitle.isDefined && x.titleType.isDefined
-        && x.startYear.get >= 1990 && x.startYear.get <= 2018 && x.titleType.get == "movie"
-        && topRatings.contains(x.tconst))
-      .map(_.primaryTitle.get)
+        && x.startYear.get >= 1990 && x.startYear.get <= 2018 && x.titleType.get == "movie")
+      .map(x => (x.tconst, x.primaryTitle.get))
+      .join(topRatings)
+      .map(x => x._2._1)
   }
 
   //  Return the top rated movie of each genre for each decade between 1900 and 1999.
@@ -71,14 +72,16 @@ object ImdbAnalysis {
   //  the same decade, print only the one with the title that comes first alphabetically. Each decade should be
   //    represented with a single digit, starting with 0 corresponding to 1900-1909.
   def task3(l1: RDD[TitleBasics], l2: RDD[TitleRatings]): RDD[(Int, String, String)] = {
-    val ratingMap = l2.map(x => (x.tconst, x.averageRating)).collectAsMap();
+    val ratingMap = l2.map(x => (x.tconst, x.averageRating));
     l1
       .filter(x => x.startYear.isDefined && x.genres.isDefined && x.startYear.get >= 1900 && x.startYear.get <= 1999
-        && x.primaryTitle.isDefined && x.titleType.isDefined && x.titleType.get == "movie" && ratingMap.contains(x.tconst))
-      .flatMap(x => x.genres.get.map((g => (ratingMap(x.tconst), x.startYear.get, g, x.primaryTitle.get))))
-      .groupBy(x => ((x._2/ 10) % 10, x._3))
-      .map{ case (key, value) => (key._1, key._2, value.minBy(y => (-y._1, y._4))._4) }
-      .sortBy(x => x)
+        && x.primaryTitle.isDefined && x.titleType.isDefined && x.titleType.get == "movie")
+      .flatMap(x => x.genres.get.map((g => (x.tconst, (x.startYear.get, g, x.primaryTitle.get)))))
+      .join(ratingMap)
+      .map(x => (((x._2._1 / 10) % 10, x._2._2), ()))
+//      .groupBy(x => ((x._2/ 10) % 10, x._3))
+//      .map{ case (key, value) => (key._1, key._2, value.minBy(y => (-y._1, y._4))._4) }
+//      .sortBy(x => x)
   }
 
   //  In this task we are interested in all the crew names (primaryName) for whom there are at least two knownfor
