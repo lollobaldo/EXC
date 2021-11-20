@@ -81,9 +81,6 @@ object ImdbAnalysis {
       .map(x => (((x._2._1._1 / 10) % 10, x._2._1._2), (x._2._2, x._2._1._3)))
       .reduceByKey((x, y) => List(x,y).minBy(y => (-y._1, y._2)))
       .map{ case (key, value) => (key._1, key._2, value._2) }
-//      .map(x => ((x._2._1._1 / 10) % 10, x._2._1._3), (x._2._2, x._2._1._3))
-//      .groupBy(x => ((x._2/ 10) % 10, x._3))
-//      .map{ case (key, value) => (key._1, key._2, value.minBy(y => (-y._1, y._4))._4) }
       .sortBy(x => x)
   }
 
@@ -94,7 +91,6 @@ object ImdbAnalysis {
     val newMovies = l1
       .filter(x => x.startYear.isDefined && x.startYear.get >= 2010 && x.startYear.get <= 2021)
       .map(x => (x.tconst, ""))
-      .collectAsMap()
     l3
       .filter(x => x.primaryName.isDefined && x.knownForTitles.isDefined
         && x.knownForTitles.get.count(y => newMovies.contains(y)) >= 2)
