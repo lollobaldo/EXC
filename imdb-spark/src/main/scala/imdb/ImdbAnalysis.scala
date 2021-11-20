@@ -78,10 +78,13 @@ object ImdbAnalysis {
         && x.primaryTitle.isDefined && x.titleType.isDefined && x.titleType.get == "movie")
       .flatMap(x => x.genres.get.map((g => (x.tconst, (x.startYear.get, g, x.primaryTitle.get)))))
       .join(ratingMap)
-      .map(x => (((x._2._1 / 10) % 10, x._2._2), ()))
+      .map(x => (((x._2._1._1 / 10) % 10, x._2._1._2), (x._2._2, x._2._1._3)))
+      .reduceByKey((x, y) => List(x,y).minBy(y => (-y._1, y._2)))
+      .map{ case (key, value) => (key._1, key._2, value._2) }
+//      .map(x => ((x._2._1._1 / 10) % 10, x._2._1._3), (x._2._2, x._2._1._3))
 //      .groupBy(x => ((x._2/ 10) % 10, x._3))
 //      .map{ case (key, value) => (key._1, key._2, value.minBy(y => (-y._1, y._4))._4) }
-//      .sortBy(x => x)
+      .sortBy(x => x)
   }
 
   //  In this task we are interested in all the crew names (primaryName) for whom there are at least two knownfor
