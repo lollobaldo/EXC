@@ -88,13 +88,17 @@ object ImdbAnalysis {
   //    films released since the year 2010 up to and including the current year (2021).
   //  You need to return the crew name and the number of such films.
   def task4(l1: RDD[TitleBasics], l2: RDD[TitleCrew], l3: RDD[NameBasics]): RDD[(String, Int)] = {
+    return sc.emptyRDD[(String, Int)]
     val newMovies = l1
       .filter(x => x.startYear.isDefined && x.startYear.get >= 2010 && x.startYear.get <= 2021)
-      .map(x => (x.tconst, ""))
+      .map(x => (x.tconst, 0))
     l3
-      .filter(x => x.primaryName.isDefined && x.knownForTitles.isDefined
-        && x.knownForTitles.get.count(y => newMovies.contains(y)) >= 2)
-      .map(x => (x.primaryName.get, x.knownForTitles.get.count(y => newMovies.contains(y))))
+      .filter(x => x.primaryName.isDefined && x.knownForTitles.isDefined)
+      .flatMap(x => x.knownForTitles.get.map(y => (y, x.primaryName.get)))
+      .join(newMovies)
+      .map{ case (key, value) => (value._1, key) }
+      .aggregateByKey(0)(((u, _) => u+1), _+_)
+//      .map(x => (x.primaryName.get, x.knownForTitles.get.count(y => newMovies.contains(y))))
   }
 
   def main(args: Array[String]) {
